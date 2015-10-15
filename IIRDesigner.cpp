@@ -38,9 +38,13 @@
  * |units Hz
  *
  * |param freqUpper[Upper Freq] The upper transition frequency.
- * This parameter is only used for band pass and band reject filters.
+ * This parameter is only used for elliptic filters
  * |default 2000
  * |units Hz
+ *
+ * |param stopBandAtten[Stop Band Attenuation] The stop band attenuation for elliptic filters.
+ * |default 60
+ * |units dB
  *
  * |param order[Order] The order of the IIR filter.
  * |default 2
@@ -51,7 +55,7 @@
  *
  * |factory /comms/iir_designer()
  * |setter setFilterType(type)
- * |setter setIIRType(iir)
+ * |setter setIIRType(window)
  * |setter setSampleRate(sampRate)
  * |setter setFrequencyLower(freqLower)
  * |setter setFrequencyUpper(freqUpper)
