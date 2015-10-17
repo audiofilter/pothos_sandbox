@@ -210,4 +210,3 @@ void IIRDesigner::recalculate(void) {
 }
 
 static Pothos::BlockRegistry registerIIRDesigner("/comms/iir_designer", &IIRDesigner::make);
-static Pothos::BlockRegistry registerIIRDesignerOldPath("/blocks/iir_designer", &IIRDesigner::make);

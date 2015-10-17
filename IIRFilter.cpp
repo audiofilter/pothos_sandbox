@@ -122,4 +122,3 @@ static Pothos::Block *IIRFilterFactory(const Pothos::DType &dtype) {
   throw Pothos::InvalidArgumentException("IIRFilterFactory(" + dtype.toString() + ")", "unsupported types");
 }
 static Pothos::BlockRegistry registerIIRFilter("/comms/iir_filter", &IIRFilterFactory);
-static Pothos::BlockRegistry registerIIRFilterOldPath("/blocks/iir_filter", &IIRFilterFactory);
