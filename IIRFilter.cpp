@@ -61,12 +61,13 @@ template <typename Type> class IIRFilter : public Pothos::Block {
 
   void setTaps(const std::vector<double>& ff, const std::vector<double>& fb) {
     if ((ff.size() == 0) || (fb.size() == 0)) throw Pothos::InvalidArgumentException("IIRFilter::setTaps()", "Order cannot 0");
-		//design = filt;
+		/*
 		std::cout << "Called SetIIR with taps A :\n";
 		for (int i=0;i<ff.size();i++) std::cout << ff[i] << " ";
-		std::cout <<"\n B :";
+		std::cout <<", B :";
 		for (int i=0;i<fb.size();i++) std::cout << fb[i] << " ";
 		std::cout <<"\n";
+		*/
 		IIR.set_taps(ff,fb);
     _waitTapsArmed = false;  // got taps
   }

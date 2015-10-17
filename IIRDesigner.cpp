@@ -139,7 +139,6 @@ class IIRDesigner : public Pothos::Block {
 
   void setOrder(const size_t num) {
     _order = num;
-		std::cout << "Called setOrder\n";
     this->recalculate();
   }
 
@@ -173,8 +172,7 @@ class IIRDesigner : public Pothos::Block {
 };
 
 void IIRDesigner::recalculate(void) {
-	std::cout << "called recalculate\n";
-  //if (not this->isActive()) return;
+  if (not this->isActive()) return;
 
   // check for error
   if (_order == 0) Pothos::Exception("IIRDesigner()", "order must be positive");
@@ -196,16 +194,15 @@ void IIRDesigner::recalculate(void) {
 		throw Pothos::InvalidArgumentException("IIRDesigner(" + _filterType + "," + _IIRType + ")", "unknown filter or band type");
   }
 
-	std::cout << "emitting....\n";
   // emit the taps
 	std::vector<double> a = filt->get_a();
 	std::vector<double> b = filt->get_b();
-	std::cout << "a = ";
-	for (int i=0;i<_order;i++) std::cout << a[i] << " ";
-	std::cout << "\n";
-	std::cout << "b = ";
-	for (int i=0;i<_order;i++) std::cout << b[i] << " ";
-	std::cout << "\n";
+	double gain = filt->getGain();
+	for (int i=0;i<a.size();i++) {
+		a[i] *= gain;
+	}
+
+	delete filt;
 	this->callVoid("tapsChanged", a, b);
 }
 
