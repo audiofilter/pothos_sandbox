@@ -32,16 +32,24 @@ template <class Numeric, class Coeff = float_type> class iir_df {
     // for `iir` part
     for (auto i = 0; i < filt.getOrder(); i++) poles.settap(i, -filt.get_a(i + 1));
   }
-
+  ~iir_df(void) {}
   //! Reset
   void reset() {
     poles.reset();
     zeros.reset();
   }
-  ~iir_df(void) {}
-  void set_taps(const std::vector<double>& ff, const std::vector<double>& fb) {
-    for (auto i = 0; i < ff.size(); i++) { zeros.settap(i, ff[i]); }
-    for (auto i = 0; i < fb.size(); i++) { poles.settap(i, fb[i]); }
+  void set_taps(const std::vector<double>& taps) {
+		// Divide vector in half, 1st half are feedforward, 2nd half feedback
+		assert(taps.size() != 0);
+		auto size = taps.size()/2;
+		zeros.set_size(size);
+		poles.set_size(size-1);
+    for (auto i = 0; i < size; i++) { zeros.settap(i, taps[i]); }
+		// Skip 1st feedback and negate the rest
+    for (auto i = 0; i < size-1; i++) { poles.settap(i, -taps[i+size+1]); }
+		
+		//		print();
+		
   }
   int order(void) { return zeros.number_of_taps(); }
   Numeric clock(Numeric in) { return (update(in)); }

@@ -18,7 +18,7 @@ using namespace spuce;
  * https://en.wikipedia.org/wiki/Infinite_impulse_response</a>
  *
  * |category /Filter
- * |keywords iir filter taps highpass lowpass bandpass
+ * |keywords iir filter taps highpass lowpass
  * |alias /blocks/iir_filter
  *
  * |param dtype[Data Type] The data type of the input and output element stream.
@@ -29,7 +29,7 @@ using namespace spuce;
  * |param taps The IIR filter taps used in convolution.
  * Manually enter or paste in IIR filter taps or leave this entry blank
  * and use the IIR Designer taps signal to configure the filter taps at runtime.
- * |default [1.0]
+ * |default [0.2, 0.4, 0.2, 1, -0.36892, 0.1956]
  *
  * |param waitTaps[Wait Taps] Wait for the taps to be set before allowing operation.
  * Use this mode when taps are set exclusively at runtime by the setTaps() slot.
@@ -50,34 +50,34 @@ template <typename Type> class IIRFilter : public Pothos::Block {
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, setTaps));
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, setWaitTaps));
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, getWaitTaps));
-		std::vector<double> ff = {1,1};
-		std::vector<double> fb = {1,2};
-		this->setTaps(ff,fb);  // initial update
+		std::vector<double> taps = {0.2,0.4,0.2,1,-0.3682,0.1956};
+		this->setTaps(taps);  // initial update
   }
 
   void setWaitTaps(const bool waitTaps) { _waitTapsMode = waitTaps; }
 
   bool getWaitTaps(void) const { return _waitTapsMode; }
 
-  void setTaps(const std::vector<double>& ff, const std::vector<double>& fb) {
-    if ((ff.size() == 0) || (fb.size() == 0)) throw Pothos::InvalidArgumentException("IIRFilter::setTaps()", "Order cannot 0");
-		/*
-		std::cout << "Called SetIIR with taps A :\n";
-		for (int i=0;i<ff.size();i++) std::cout << ff[i] << " ";
+  void setTaps(const std::vector<double>& taps) {
+    if (taps.size() == 0) throw Pothos::InvalidArgumentException("IIRFilter::setTaps()", "Order cannot 0");
+#ifdef DEBUG
+		std::cout << "Called SetIIR with taps A :";
+		for (int i=0;i<taps.size()/2;i++) std::cout << taps[i] << " ";
 		std::cout <<", B :";
-		for (int i=0;i<fb.size();i++) std::cout << fb[i] << " ";
+		for (int i=0;i<taps.size()/2;i++) std::cout << taps[i+taps.size()/2] << " ";
 		std::cout <<"\n";
-		*/
-		IIR.set_taps(ff,fb);
+#endif
+		IIR.set_taps(taps);
     _waitTapsArmed = false;  // got taps
   }
 
-  //! always use a circular buffer to avoid discontinuity over sliding window
-  Pothos::BufferManager::Sptr getInputBufferManager(const std::string &, const std::string &) {
-    return Pothos::BufferManager::make("circular");
-  }
-
+	void reset(void)
+	{
+		IIR.reset();
+	}
+	
   void activate(void) {
+		this->reset();
     _waitTapsArmed = _waitTapsMode;
   }
 

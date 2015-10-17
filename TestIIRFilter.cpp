@@ -25,9 +25,9 @@ static double iirfilterToneGetRMS(
 
     auto designer = registry.callProxy("/comms/iir_designer");
     designer.callVoid("setSampleRate", sampRate);
+    designer.callVoid("setIIRType", "butterworth");
     designer.callVoid("setFilterType", "LOW_PASS");
     designer.callVoid("setFrequencyLower", 0.1*sampRate);
-    designer.callVoid("setFrequencyUpper", 0.2*sampRate);
     designer.callVoid("setOrder", 4);
 
     auto probe = registry.callProxy("/comms/signal_probe", "complex128");
@@ -36,7 +36,7 @@ static double iirfilterToneGetRMS(
     //run the topology
     {
         Pothos::Topology topology;
-        topology.connect(designer, "iirChanged", filter, "setIIR");
+        topology.connect(designer, "tapsChanged", filter, "setTaps");
         topology.connect(waveSource, 0, finiteRelease, 0);
         topology.connect(finiteRelease, 0, filter, 0);
         topology.connect(filter, 0, probe, 0);

@@ -27,36 +27,39 @@ using namespace spuce;
  *
  * |param iir[IIR Type] The type of IIR filter.
  * |default "butterworth"
+ * |option [Butterworth] "butterworth"
  * |option [Chebyshev] "chebyshev"
  * |option [Elliptic] "elliptic"
  * |widget ComboBox(editable=true)
  *
  * |param sampRate[Sample Rate] The sample rate, in samples per second.
  * The transition frequencies must be within the Nyqist frequency of the sampling rate.
- * |default 1e6
+ * |default 44100
  * |units Sps
  *
  * |param freqLower[Lower Freq] The lower transition frequency.
  * For low and high pass filters, this is the only transition frequency.
  * For root raised cosine and Gaussian filters, this is the symbol rate.
- * |default 1000
+ * |default 4000
  * |units Hz
  *
  * |param freqUpper[Upper Freq] The upper transition frequency.
  * This parameter is only used for elliptic filters
- * |default 2000
+ * |default 8000
  * |units Hz
  *
  * |param stopBandAtten[Stop Band Attenuation] The stop band attenuation for elliptic filters.
  * |default 60
  * |units dB
  *
+ * |param ripple[Ripple] For Chebyshev or Elliptic filters
+ * This is pass band ripple in dB
+ * |default 0.1
+ * |units dB
+ *
  * |param order[Order] The order of the IIR filter.
  * |default 2
  * |widget SpinBox(minimum=1)
- *
- * |param ripple[Ripple] For the Chebyshev or Elliptic filter, this is pass band ripple in dB
- * |default 0.1
  *
  * |factory /comms/iir_designer()
  * |setter setFilterType(type)
@@ -194,16 +197,16 @@ void IIRDesigner::recalculate(void) {
 		throw Pothos::InvalidArgumentException("IIRDesigner(" + _filterType + "," + _IIRType + ")", "unknown filter or band type");
   }
 
-  // emit the taps
-	std::vector<double> a = filt->get_a();
+  // get the tap from iir_coeff for iir_filter, incorporating the gain to feedforward taps
 	std::vector<double> b = filt->get_b();
+	std::vector<double> a = filt->get_a();
+	// Group together feed forward and feed back taps into 1 vector for transferring to IIR filter
 	double gain = filt->getGain();
-	for (int i=0;i<a.size();i++) {
-		a[i] *= gain;
-	}
+	for (int i=0;i<b.size();i++) b[i] *= gain;
+	for (int i=0;i<a.size();i++) b.push_back(a[i]);
 
 	delete filt;
-	this->callVoid("tapsChanged", a, b);
+	this->callVoid("tapsChanged", b);
 }
 
 static Pothos::BlockRegistry registerIIRDesigner("/comms/iir_designer", &IIRDesigner::make);

@@ -87,17 +87,20 @@ template <class Numeric, class Coeff = float_type> class fir {
   }
   //! Set size of Filter
   void set_size(long n) {
-    int i;
-    num_taps = n;
-    if (n > 0) {
-      coeff.resize(n);
-      z.resize(n);
-      for (i = 0; i < n; i++) z[i] = (Numeric)0;
-      for (i = 0; i < n; i++) coeff[i] = (Coeff)0;
-    } else {
-      coeff.resize(0);
-      z.resize(0);
-    }
+		if (get_size() == n) {
+			// size already is correct
+		} else {
+			num_taps = n;
+			if (n > 0) {
+				coeff.resize(n);
+				z.resize(n);
+				for (int i = 0; i < n; i++) z[i] = (Numeric)0;
+				for (int i = 0; i < n; i++) coeff[i] = (Coeff)0;
+			} else {
+				coeff.resize(0);
+				z.resize(0);
+			}
+		}
   }
   long get_size(void) { return (num_taps); }
   //!  Constructor that gets coefficients from file (requires fir.cpp)
