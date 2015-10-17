@@ -3,6 +3,11 @@
 #include <complex>
 #include <iostream>
 
+#include <spuce/filters/design_iir.h>
+#include <spuce/filters/iir_coeff.h>
+
+using namespace spuce;
+
 /***********************************************************************
  * |PothosDoc IIR Designer
  *
@@ -20,7 +25,7 @@
  * |option [Low Pass] "LOW_PASS"
  * |option [High Pass] "HIGH_PASS"
  *
- * |param window[IIR Type] The type of IIR filter.
+ * |param iir[IIR Type] The type of IIR filter.
  * |default "butterworth"
  * |option [Chebyshev] "chebyshev"
  * |option [Elliptic] "elliptic"
@@ -55,7 +60,7 @@
  *
  * |factory /comms/iir_designer()
  * |setter setFilterType(type)
- * |setter setIIRType(window)
+ * |setter setIIRType(iir)
  * |setter setSampleRate(sampRate)
  * |setter setFrequencyLower(freqLower)
  * |setter setFrequencyUpper(freqUpper)
@@ -134,6 +139,7 @@ class IIRDesigner : public Pothos::Block {
 
   void setOrder(const size_t num) {
     _order = num;
+		std::cout << "Called setOrder\n";
     this->recalculate();
   }
 
@@ -167,7 +173,8 @@ class IIRDesigner : public Pothos::Block {
 };
 
 void IIRDesigner::recalculate(void) {
-  if (not this->isActive()) return;
+	std::cout << "called recalculate\n";
+  //if (not this->isActive()) return;
 
   // check for error
   if (_order == 0) Pothos::Exception("IIRDesigner()", "order must be positive");
@@ -182,26 +189,21 @@ void IIRDesigner::recalculate(void) {
   }
 
   // generate the filter design
-	/*
   iir_coeff* filt = design_iir(_IIRType, _filterType, _order,
 															 _freqLower/_sampRate, _ripple,
 															 _freqUpper/_sampRate, _stopBandAtten);
 	if (filt == nullptr) {
 		throw Pothos::InvalidArgumentException("IIRDesigner(" + _filterType + "," + _IIRType + ")", "unknown filter or band type");
   }
-	*/
 
+	std::cout << "emitting....\n";
   // emit the taps
-	std::vector<double> a;
-	std::vector<double> b;
-	for (int i=0;i<_order;i++) {
-		a.push_back(i); //filt->a_tf[i]);
-		b.push_back(-i); //filt->b_tf[i]);
-	}
-	std::cout << "a[] = ";
+	std::vector<double> a = filt->get_a();
+	std::vector<double> b = filt->get_b();
+	std::cout << "a = ";
 	for (int i=0;i<_order;i++) std::cout << a[i] << " ";
 	std::cout << "\n";
-	std::cout << "b[] = ";
+	std::cout << "b = ";
 	for (int i=0;i<_order;i++) std::cout << b[i] << " ";
 	std::cout << "\n";
 	this->callVoid("tapsChanged", a, b);
