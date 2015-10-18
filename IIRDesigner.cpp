@@ -192,7 +192,7 @@ void IIRDesigner::recalculate(void) {
   // generate the filter design
   iir_coeff* filt = design_iir(_IIRType, _filterType, _order,
 															 _freqLower/_sampRate, _ripple,
-															 _freqUpper/_sampRate, _stopBandAtten);
+															 _stopBandAtten, _freqUpper/_sampRate);
 	if (filt == nullptr) {
 		throw Pothos::InvalidArgumentException("IIRDesigner(" + _filterType + "," + _IIRType + ")", "unknown filter or band type");
   }

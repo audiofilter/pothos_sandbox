@@ -306,7 +306,7 @@
                     "rotation" : 0,
                     "selected" : false,
                     "what" : "Block",
-                    "zValue" : 423
+                    "zValue" : 453
                 },
                 {
                     "affinityZone" : "",
@@ -666,11 +666,11 @@
                     "properties" : [
                         {
                             "key" : "type",
-                            "value" : "\"HIGH_PASS\""
+                            "value" : "\"LOW_PASS\""
                         },
                         {
                             "key" : "iir",
-                            "value" : "\"chebyshev\""
+                            "value" : "\"elliptic\""
                         },
                         {
                             "key" : "sampRate",
@@ -682,11 +682,11 @@
                         },
                         {
                             "key" : "freqUpper",
-                            "value" : "8000"
+                            "value" : "0.3*rate"
                         },
                         {
                             "key" : "stopBandAtten",
-                            "value" : "60"
+                            "value" : "80"
                         },
                         {
                             "key" : "ripple",
@@ -700,7 +700,7 @@
                     "rotation" : 0,
                     "selected" : true,
                     "what" : "Block",
-                    "zValue" : 451
+                    "zValue" : 476
                 },
                 {
                     "affinityZone" : "",
@@ -945,12 +945,12 @@
                     "height" : 54,
                     "id" : "WidgetNumericEntry1",
                     "positionX" : 21,
-                    "positionY" : 274,
+                    "positionY" : 263,
                     "rotation" : 0,
                     "selected" : false,
                     "what" : "Widget",
                     "width" : 229,
-                    "zValue" : 434
+                    "zValue" : 470
                 },
                 {
                     "blockId" : "NumericEntry0",
@@ -963,7 +963,7 @@
                     "selected" : false,
                     "what" : "Widget",
                     "width" : 220,
-                    "zValue" : 448
+                    "zValue" : 475
                 }
             ],
             "pageName" : "Main",
