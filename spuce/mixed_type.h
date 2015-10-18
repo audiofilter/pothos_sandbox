@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 // Copyright (c) 2015 Tony Kirke. License MIT  (http://www.opensource.org/licenses/mit-license.php)
 namespace spuce {
 //! \file
