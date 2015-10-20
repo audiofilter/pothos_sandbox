@@ -29,7 +29,7 @@ using namespace spuce;
  * |param taps The IIR filter taps used in convolution.
  * Manually enter or paste in IIR filter taps or leave this entry blank
  * and use the IIR Designer taps signal to configure the filter taps at runtime.
- * |default [0.2, 0.4, 0.2, 1, -0.36892, 0.1956]
+ * |default [0.0676, 0.135, 0.0676, 1, -1.142, 0.412]
  *
  * |param waitTaps[Wait Taps] Wait for the taps to be set before allowing operation.
  * Use this mode when taps are set exclusively at runtime by the setTaps() slot.
@@ -50,7 +50,7 @@ template <typename Type> class IIRFilter : public Pothos::Block {
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, setTaps));
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, setWaitTaps));
     this->registerCall(this, POTHOS_FCN_TUPLE(IIRFilter, getWaitTaps));
-		std::vector<double> taps = {0.2,0.4,0.2,1,-0.3682,0.1956};
+		std::vector<double> taps = {0.0676, 0.135, 0.0676, 1, -1.142, 0.412};
 		this->setTaps(taps);  // initial update
   }
 
