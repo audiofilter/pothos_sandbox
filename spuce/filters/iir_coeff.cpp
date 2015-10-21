@@ -27,7 +27,6 @@ void iir_coeff::print() const {
   std::cout << "B = {";
   for (int i = 0; i < b_tf.size(); i++) { std::cout << b_tf[i] << " "; }
   std::cout << "}\n";
-  std::cout << "gain = " << getGain() << "\n";
 }
 void iir_coeff::print_pz() const {
   std::cout << "zeros = {";
@@ -41,10 +40,14 @@ void iir_coeff::print_pz() const {
 
 int iir_coeff::isOdd(void) const { return odd; }
 int iir_coeff::getOrder(void) const { return order; }
-int iir_coeff::getState(void) const { return state; }
+	//int iir_coeff::getState(void) const { return state; }
 int iir_coeff::getN2(void) const { return n2; }
 float_type iir_coeff::getGain(void) const { return gain; }
-
+void iir_coeff::apply_gain(float_type g) {
+    for (int i=0;i<b_tf.size();i++) {
+        b_tf[i] *= g;
+    }
+}
 iir_coeff::iir_coeff(long ord, filter_type lp)
     : poles((ord + 1) / 2), zeros((ord + 1) / 2), a_tf(ord + 1), b_tf(ord + 1), lpf(lp) {
   // amax - attenuation at cutoff
@@ -55,9 +58,9 @@ iir_coeff::iir_coeff(long ord, filter_type lp)
     poles[j] = std::complex<float_type>(0.0, 0.0);
     zeros[j] = std::complex<float_type>(0.0, 0.0);
   }
-  state = 0;  // un-initialized
-  tf_state = 0;
-  ap_state = 0;
+  state = filter_state::s0;  // un-initialized
+  //tf_state = 0;
+  //ap_state = 0;
 }
 //! Destructor
 iir_coeff::~iir_coeff() {}
@@ -73,15 +76,14 @@ void iir_coeff::bilinear() {
     zeros[j] = ((float_type)1.0 - zeros[j]) / ((float_type)1.0 + zeros[j]);
     poles[j] = ((float_type)1.0 - poles[j]) / ((float_type)1.0 + poles[j]);
   }
-  state = 2;  // in Z-domain now!
+  state = filter_state::s2;  // in Z-domain now!
 }
 void iir_coeff::convert_to_ab() {
-  double hpf_z_gain = 0;
-  double hpf_p_gain = 0;
-  double z_gain = 0;
-  double p_gain = 0;
+  float_type hpf_z_gain = 0;
+  float_type hpf_p_gain = 0;
+  float_type z_gain = 0;
+  float_type p_gain = 0;
   gain = (float_type)1.0;
-  //  hpf_gain = (float_type)1.0;
 
   z_root_to_ab(zeros);
   z_gain = gain;
@@ -98,17 +100,17 @@ void iir_coeff::convert_to_ab() {
 
   if (lpf == filter_type::high) gain = hpf_gain;
 
-  state = 3;  // in Z-domain 2nd order A/B coefficients
+  state = filter_state::s3;  // in Z-domain 2nd order A/B coefficients
   a_tf = p2_to_poly(poles);
   b_tf = p2_to_poly(zeros);
-
-  // for (int i=0;i<a_tf.size();i++) std::cout << "a[" <<i << "] = "<< a_tf[i] << "\n";
-  // for (int i=0;i<b_tf.size();i++) std::cout << "b[" <<i << "] = "<< b_tf[i] << "\n";
+  // Apply gain to b coefficents
+  apply_gain(gain);
+  
 }
 void iir_coeff::ab_to_tf() {
   a_tf = p2_to_poly(poles);
   b_tf = p2_to_poly(zeros);
-  state = 3;  // in Z-domain 2nd order A/B coefficients
+  state = filter_state::s3;  // in Z-domain 2nd order A/B coefficients
 }
 void iir_coeff::z_root_to_ab(std::vector<std::complex<float_type> >& z) {
   for (int j = odd; j < n2; j++) {
@@ -117,7 +119,7 @@ void iir_coeff::z_root_to_ab(std::vector<std::complex<float_type> >& z) {
     z[j] = std::complex<float_type>(-2 * real(z[j]), std::norm(z[j]));
   }
   if (gain == 0.0) gain = 1.0;
-  state = 3;  // in Z-domain 2nd order A/B coefficients
+  state = filter_state::s3;  // in Z-domain 2nd order A/B coefficients
 }
 // Takes poles or zeros and creates a polynomial transfer function
 std::vector<float_type> iir_coeff::pz_to_poly(const std::vector<std::complex<float_type> >& z) {
@@ -138,7 +140,7 @@ std::vector<float_type> iir_coeff::pz_to_poly(const std::vector<std::complex<flo
     m += 2;
     for (int i = 0; i < m; i++) p[i] = tf[i];
   }
-  tf_state = 1;
+  //tf_state = 1;
   return (tf);
 }
 // Takes 'n' 2nd order polynomials of the form 1+a*z + b*z^2
@@ -282,8 +284,8 @@ void iir_coeff::pz_to_ap() {
   // Save these coefficients for transfer to IIR implemented as
   // allpass sections
 
-  ap_state = 1;
-  state = 4;
+  //ap_state = 1;
+  state = filter_state::s4;
 }
 float_type iir_coeff::max_abs_coeff() {
   float_type maxv = 0;

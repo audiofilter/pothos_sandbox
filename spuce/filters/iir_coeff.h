@@ -34,12 +34,12 @@ class iir_coeff {
   float_type get_coeff_a(long i) const;
   float_type get_coeff_b(long i) const;
   float_type max_abs_coeff();
-  void quantize(int bits) { ; }
+  void apply_gain(float_type g);
   float_type freqz_mag(float_type freq);
   float_type getGain(void) const;
   int getOrder(void) const;
   int getN2(void) const;
-  int getState(void) const;
+	//  int getState(void) const;
   int isOdd(void) const;
   std::vector<float_type> get_a() const;
   std::vector<float_type> get_b() const;
@@ -49,6 +49,7 @@ class iir_coeff {
   void print_pz() const;
 
  private:
+	enum class filter_state {s0,s1,s2,s3,s4};
   std::vector<std::complex<float_type> > poles;
   std::vector<std::complex<float_type> > zeros;
   float_type gain;
@@ -56,9 +57,9 @@ class iir_coeff {
   long n2;
   long odd;
   long order;
-  long state;
-  long tf_state;
-  long ap_state;
+  filter_state state;
+  //long tf_state;
+  //long ap_state;
   std::vector<float_type> a_tf;
   std::vector<float_type> b_tf;
   filter_type lpf;

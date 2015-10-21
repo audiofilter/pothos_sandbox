@@ -201,8 +201,6 @@ void IIRDesigner::recalculate(void) {
 	std::vector<double> b = filt->get_b();
 	std::vector<double> a = filt->get_a();
 	// Group together feed forward and feed back taps into 1 vector for transferring to IIR filter
-	double gain = filt->getGain();
-	for (int i=0;i<b.size();i++) b[i] *= gain;
 	for (int i=0;i<a.size();i++) b.push_back(a[i]);
 
 	delete filt;
