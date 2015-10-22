@@ -68,6 +68,7 @@ template <typename Type> class IIRFilter : public Pothos::Block {
 		std::cout <<"\n";
 #endif
 		IIR.set_taps(taps);
+		IIR.reset();
     _waitTapsArmed = false;  // got taps
   }
 
