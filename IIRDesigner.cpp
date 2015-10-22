@@ -37,15 +37,14 @@ using namespace spuce;
  * |default 44100
  * |units Sps
  *
+ * |param order[Order] The order of the IIR filter.
+ * |default 2
+ * |widget SpinBox(minimum=1)
+ *
  * |param freqLower[Lower Freq] The lower transition frequency.
  * For low and high pass filters, this is the only transition frequency.
  * For root raised cosine and Gaussian filters, this is the symbol rate.
  * |default 4000
- * |units Hz
- *
- * |param freqUpper[Upper Freq] The upper transition frequency.
- * This parameter is only used for elliptic filters
- * |default 8000
  * |units Hz
  *
  * |param stopBandAtten[Stop Band Attenuation] The stop band attenuation for elliptic filters.
@@ -57,9 +56,10 @@ using namespace spuce;
  * |default 0.1
  * |units dB
  *
- * |param order[Order] The order of the IIR filter.
- * |default 2
- * |widget SpinBox(minimum=1)
+ * |param freqUpper[Upper Freq] The upper transition frequency.
+ * This parameter is only used for elliptic filters
+ * |default 8000
+ * |units Hz
  *
  * |factory /comms/iir_designer()
  * |setter setFilterType(type)
