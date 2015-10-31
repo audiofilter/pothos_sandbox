@@ -454,7 +454,7 @@
                     "properties" : [
                         {
                             "key" : "title",
-                            "value" : "\"Cutoff\""
+                            "value" : "\"Lower Frequency\""
                         },
                         {
                             "key" : "value",
@@ -848,7 +848,7 @@
                 }
             ],
             "pageName" : "Main",
-            "selected" : true
+            "selected" : false
         },
         {
             "graphObjects" : [
@@ -915,20 +915,24 @@
                         }
                     ],
                     "path" : "\/comms\/iir_designer",
-                    "positionX" : 811,
-                    "positionY" : 121,
+                    "positionX" : 765,
+                    "positionY" : 133,
                     "properties" : [
                         {
                             "key" : "type",
-                            "value" : "\"LOW_PASS\""
+                            "value" : "\"BAND_PASS\""
                         },
                         {
                             "key" : "iir",
-                            "value" : "\"elliptic\""
+                            "value" : "\"butterworth\""
                         },
                         {
                             "key" : "sampRate",
                             "value" : "rate"
+                        },
+                        {
+                            "key" : "order",
+                            "value" : "5"
                         },
                         {
                             "key" : "freqLower",
@@ -945,16 +949,12 @@
                         {
                             "key" : "ripple",
                             "value" : "0.1"
-                        },
-                        {
-                            "key" : "order",
-                            "value" : "5"
                         }
                     ],
                     "rotation" : 0,
-                    "selected" : true,
+                    "selected" : false,
                     "what" : "Block",
-                    "zValue" : 517
+                    "zValue" : 524
                 },
                 {
                     "enabled" : true,
@@ -1023,15 +1023,15 @@
                 {
                     "blockId" : "Periodogram0",
                     "enabled" : true,
-                    "height" : 317,
+                    "height" : 328,
                     "id" : "WidgetPeriodogram0",
                     "positionX" : 32,
                     "positionY" : 116,
                     "rotation" : 0,
-                    "selected" : false,
+                    "selected" : true,
                     "what" : "Widget",
                     "width" : 627,
-                    "zValue" : 514
+                    "zValue" : 532
                 },
                 {
                     "blockId" : "NumericEntry1",
@@ -1057,11 +1057,11 @@
                     "selected" : false,
                     "what" : "Widget",
                     "width" : 220,
-                    "zValue" : 518
+                    "zValue" : 534
                 }
             ],
             "pageName" : "Control",
-            "selected" : false
+            "selected" : true
         }
     ]
 }
